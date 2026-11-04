@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#24251f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="山寺">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="一起无言静坐的线上寺院——山寺。">
+<title>山寺，小憩片刻</title>
+<link rel="canonical" href="https://sansatemple.com/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="山寺">
+<meta property="og:title" content="山寺，小憩片刻">
+<meta property="og:description" content="一起无言静坐的线上寺院。">
+<meta property="og:url" content="https://sansatemple.com/">
+<meta property="og:image" content="https://sansatemple.com/og/sansa-rest-20261101-v11.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="正面合掌的小沙弥与青山·白法堂标志。山寺，小憩片刻。">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="山寺，小憩片刻">
+<meta name="twitter:description" content="一起无言静坐的线上寺院。">
+<meta name="twitter:image" content="https://sansatemple.com/og/sansa-rest-20261101-v11.png">
+<meta name="twitter:image:alt" content="正面合掌的小沙弥与青山·白法堂标志。山寺，小憩片刻。">
+<link rel="icon" type="image/x-icon" href="/favicon.ico?v=4c79780808f4" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4c79780808f4" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=4c79780808f4">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=ccfba25ef8c5">
+<link rel="manifest" href="/manifest.webmanifest?v=ccfba25ef8c5">
+<link rel="preload" href="/fonts/SansaQuietUI-Core.woff2?v=bc9d113510bd" as="font" type="font/woff2" crossorigin>
+<style>
+  .sansa-boot { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px; padding:24px; background:#eeece3; color:#4d5144; font-family:"Sansa Quiet UI",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif; text-align:center; }
+  .sansa-boot-mark { display:flex; margin-bottom:6px; color:#8a8068; }
+  .sansa-boot-mark svg { width:32px; height:32px; stroke-width:1; }
+  .sansa-boot h1 { margin:0; padding-left:5px; font-size:27px; font-weight:500; letter-spacing:5px; }
+  .sansa-boot p { margin:0; max-width:100%; color:#838677; font-size:12px; line-height:1.7; }
+  .sansa-boot-dot { width:4px; height:4px; margin-top:18px; background:#a99a7b; border-radius:50%; animation:boot-breathe 1.8s ease-in-out infinite; }
+  .sansa-boot-retry { position:absolute; bottom:max(24px,env(safe-area-inset-bottom)); display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 16px; color:#64664f; font-size:13px; text-decoration:underline; text-underline-offset:3px; visibility:hidden; animation:boot-retry 0s 15s forwards; }
+  .sansa-boot-retry:focus-visible { outline:2px solid #988762; outline-offset:4px; }
+  .sansa-boot.is-error h1 { padding:0; font-size:21px; letter-spacing:0; }
+  .sansa-boot.is-error .sansa-boot-dot { display:none; }
+  .sansa-boot.is-error .sansa-boot-retry { position:static; visibility:visible; animation:none; }
+  @keyframes boot-breathe { 50% { opacity:.25; } }
+  @keyframes boot-retry { to { visibility:visible; } }
+  @media(prefers-reduced-motion:reduce) { .sansa-boot-dot { animation:none; } }
+</style>
+<script>
+/* rAF 看门狗:正常环境零开销透传;检测到 rAF 停滞(回调排队但 300ms 未触发)
+   时自动切换为定时器驱动(≈30fps),悬死的回调也会转投回退循环——
+   保证 3D 渲染循环在任何环境(内嵌面板/后台标签)都能持续运转。 */
+(function () {
+  var nativeRAF = window.requestAnimationFrame && window.requestAnimationFrame.bind(window);
+  var nativeCAF = window.cancelAnimationFrame && window.cancelAnimationFrame.bind(window);
+  if (!nativeRAF) { window.__sansaRafMode = "timer"; return; }
+  var fallback = false, pending = 0, inflight = [], lastFire = performance.now();
+  var queue = [], alive = {}, nextId = 0, pump = null;
+  window.requestAnimationFrame = function (cb) {
+    if (fallback) {
+      var id = ++nextId; alive[id] = true;
+      queue.push([id, cb]);
+      return id;
+    }
+    pending++;
+    var wrapper = function (t) {
+      pending--; lastFire = performance.now();
+      var ix = inflight.indexOf(wrapper); if (ix >= 0) inflight.splice(ix, 1);
+      cb(t);
+    };
+    inflight.push(wrapper);
+    return nativeRAF(wrapper);
+  };
+  window.cancelAnimationFrame = function (id) {
+    if (fallback) delete alive[id];
+    else if (nativeCAF) nativeCAF(id);
+  };
+  setInterval(function () {
+    if (fallback || pending <= 0) return;
+    if (performance.now() - lastFire > 300) {
+      fallback = true;
+      window.__sansaRafMode = "watchdog-timer";
+      // 把悬死在原生 rAF 里的回调转投回退循环,游戏主循环得以接续
+      inflight.forEach(function (w) { var id = ++nextId; alive[id] = true; queue.push([id, w]); });
+      inflight = [];
+      pump = setInterval(function () {
+        var t = performance.now();
+        var cur = queue; queue = [];
+        for (var i = 0; i < cur.length; i++) {
+          var p = cur[i];
+          if (alive[p[0]]) { delete alive[p[0]]; try { p[1](t); } catch (e) { } }
+        }
+      }, 32);
+    }
+  }, 250);
+})();
+/* WebSocket.close 兜底:浏览器只允许 JS 使用 close code 1000 或 3000-4999,
+   原站代码在异常恢复路径会调用 close(1011)(协议保留代码),在部分环境抛
+   InvalidAccessError 导致重连机制瘫痪。这里把非法代码透明降级为 1000。 */
+(function () {
+  try {
+    var nativeClose = WebSocket.prototype.close;
+    WebSocket.prototype.close = function (code, reason) {
+      var c = code;
+      if (c !== undefined && c !== null && c !== 1000 && !(c >= 3000 && c <= 4999)) c = 1000;
+      return nativeClose.call(this, c, reason);
+    };
+  } catch (e) { }
+})();
+/* ── 单机模式:页面内模拟虚拟玩家 ──
+   在本地服务器(node server.mjs)上运行时,在线层走真 WebSocket;
+   其他环境(如 GitHub Pages 静态托管)没有后端,由这里在页面内存中
+   模拟整套在线层接口与虚拟玩家行为状态机,体验完整、无任何外部依赖。
+   可用 localStorage.setItem('sansa:standalone','1'|'0') 强制开/关。 */
+(function () {
+  var forced = null;
+  try { forced = localStorage.getItem('sansa:standalone'); } catch (e) { }
+  window.__sansaStandalone = forced === '1' ? true
+    : forced === '0' ? false
+    : !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+
+  var RESERVED = [12, 15, 17, 18];
+  var NAMES = ['行云', '扫叶', '听雨', '抱朴', '守拙', '望岳', '汲泉', '煮雪', '拾阶', '问竹',
+    '归鸿', '疏影', '眠云', '拂尘', '汲露', '踏歌', '倚松', '沐晚', '闻钟', '含烟',
+    '映竹', '枕石', '漱玉', '停云'];
+  var COLORS = ['#8a9a8b', '#9a8b7a', '#7d8a9a', '#a89888', '#7e8a7e', '#9c8f7f',
+    '#887f92', '#8f9a85', '#a09a86', '#7f948f', '#96887e', '#87929c'];
+  var POSES = ['kneel', 'walk', 'beads', 'dance'];
+  var INCENSE_MS = 120000, COOL_MS = 8000;
+  var nameCursor = Math.floor(Math.random() * NAMES.length);
+  function uuid() { return crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16); }); }
+  function cushionPos(i) { var col = i % 10; return { x: col < 5 ? (col - 5) * 2.4 : (col - 4) * 2.4, z: -8.4 + Math.floor(i / 10) * 2.8, yaw: 0 }; }
+  function spawnPos(slot, existing) {
+    function spread(o, a) { a = a || 3.2; return o === 0 ? 0 : Math.ceil(o / 2) * (o % 2 ? -1 : 1) * a; }
+    function spot(o) { if (o < 18) return { x: spread(o % 9), z: o < 9 ? 21.6 : 18.4, yaw: 0 }; var a = o - 18; return { x: spread(a % 13), z: 30.4 + Math.floor(a / 13) * 3.2, yaw: 0 }; }
+    function clear(o) { for (var k = 0; k < existing.length; k++) if (Math.hypot(o.x - existing[k].x, o.z - existing[k].z) < 1.06 - 1e-7) return false; return true; }
+    for (var i = 0; i < 100; i++) { var o = spot((slot + i) % 100); if (clear(o)) return o; }
+    return spot(slot % 100);
+  }
+  window.__sansaCreatePresence = function (cb) {
+    var BOT_TARGET = 3 + Math.floor(Math.random() * 10);
+    var selfId = uuid();
+    var visitors = [];   // wire 格式访客(self 在内)
+    var bots = [];       // bot 状态
+    var incense = [];
+    var cooling = {};    // cushion -> freeAt
+    var dirty = true, destroyed = false;
+    var byId = {};       // id -> visitor(wire)
+    var seatUsed = {}, cursor = Math.floor(Math.random() * 100);
+    function freeSeat() { for (var i = 0; i < 100; i++) { var s = (cursor + i) % 100; if (!seatUsed[s]) { seatUsed[s] = true; cursor = (s + 1) % 100; return s; } } return 0; }
+    function releaseSeat(s) { delete seatUsed[s]; }
+    function freeCushion() {
+      var now = Date.now();
+      for (var k in cooling) if (cooling[k] <= now) delete cooling[k];
+      var taken = {};
+      for (var i = 0; i < visitors.length; i++) {
+        var v = visitors[i];
+        if (v.cushion !== null && v.cushion !== undefined) taken[v.cushion] = 1;
+        if (v.pendingCushion !== undefined && v.pendingCushion !== null) taken[v.pendingCushion] = 1;
+      }
+      for (var j = 0; j < 100; j++) { if (!RESERVED.some(function (r) { return r === j; }) && !taken[j] && !cooling[j]) return j; }
+      return null;
+    }
+    function nextName() { var n = NAMES[nameCursor % NAMES.length]; var r = Math.floor(nameCursor / NAMES.length); nameCursor++; return r === 0 ? n : n + '·' + (r + 1); }
+    function pruneIncense() { var now = Date.now(); for (var i = incense.length - 1; i >= 0; i--) if (incense[i].expiresAt <= now) incense.splice(i, 1); }
+    function wire(v) {
+      var o = { id: v.id, name: v.name, color: v.color, seat: v.seat, cushion: v.cushion === undefined ? null : v.cushion, joinedAt: v.joinedAt, pose: v.pose || 'walk', position: { x: Math.round(v.position.x * 100) / 100, z: Math.round(v.position.z * 100) / 100, yaw: Math.round(v.position.yaw * 100) / 100 } };
+      if (v.bowAt !== undefined) o.bowAt = v.bowAt;
+      return o;
+    }
+    function push() { dirty = true; }
+    function flush() {
+      if (!dirty || destroyed) return;
+      dirty = false;
+      pruneIncense();
+      visitors = [selfV];
+      for (var i = 0; i < bots.length; i++) visitors.push(bots[i].v);
+      byId = {};
+      for (var j = 0; j < visitors.length; j++) byId[visitors[j].id] = visitors[j];
+      cb.onState(visitors.map(wire), selfId);
+    }
+    // ── 自己 ──
+    var selfV = { id: selfId, name: NAMES[Math.floor(Math.random() * NAMES.length)] + '子', color: '#8a9a8b', seat: freeSeat(), cushion: null, joinedAt: Date.now(), pose: 'walk', position: spawnPos(0, []), pendingCushion: undefined };
+    function cool(c) { if (c !== null && c !== undefined) cooling[c] = Date.now() + COOL_MS; }
+    // ── 虚拟玩家 ──
+    function makeBot(backdate) {
+      var v = { id: uuid(), name: nextName(), color: COLORS[Math.floor(Math.random() * COLORS.length)], seat: freeSeat(), cushion: null, joinedAt: Date.now() - backdate, pose: 'walk', position: spawnPos(cursor, visitors.map(function (x) { return x.position; })), pendingCushion: undefined };
+      var b = { v: v, state: 'idle', act: null, nextDecisionAt: Date.now() + 1500 + Math.random() * 5000, from: null, to: null, walkStart: 0, walkDur: 1, walkSpeed: 1.05 + Math.random() * 0.45, onArrive: null, sitUntil: 0, bowsLeft: 0 };
+      bots.push(b);
+      dirty = true;
+      return b;
+    }
+    function walkTo(b, target, then) {
+      var v = b.v, dist = Math.hypot(target.x - v.position.x, target.z - v.position.z);
+      if (dist < 0.15) { if (then) then(); return; }
+      b.from = { x: v.position.x, z: v.position.z, yaw: v.position.yaw };
+      b.to = { x: target.x, z: target.z };
+      b.walkStart = Date.now();
+      b.walkDur = Math.max(500, dist / b.walkSpeed * 1000);
+      b.state = 'walk'; v.pose = 'walk'; v.cushion = null;
+      b.onArrive = then;
+    }
+    var BUDDHA = [-4.5, -2.2, 0, 2.2, 4.5];
+    function stopBot(b, now) { b.state = 'idle'; b.act = null; b.v.pendingCushion = undefined; b.nextDecisionAt = now + 2500 + Math.random() * 6000; }
+    function decide(b, now) {
+      var v = b.v, r = Math.random();
+      if (v.cushion !== null) {
+        if (now >= b.sitUntil) { cool(v.cushion); v.cushion = null; v.pose = 'walk'; dirty = true; stopBot(b, now); }
+        else if (Math.random() < 0.05) cb.onEvent({ type: 'bead', id: v.id });
+        return;
+      }
+      if (b.bowsLeft > 0) {
+        b.bowsLeft--; v.bowAt = now; cb.onEvent({ type: 'bow', id: v.id }); dirty = true;
+        b.nextDecisionAt = now + 4200 + Math.random() * 1200;
+        return;
+      }
+      if (r < 0.30) { // 参拜
+        var bx = BUDDHA[Math.floor(Math.random() * BUDDHA.length)];
+        walkTo(b, { x: bx, z: -18.5 - Math.random() * 1.5 }, function () {
+          v.position.yaw = 0; dirty = true;
+          b.act = { kind: 'worship', nextAt: now + 1200 + Math.random() * 800, bowsLeft: 1 + Math.floor(Math.random() * 3) };
+        });
+      } else if (r < 0.55) { // 落座
+        var c = freeCushion();
+        if (c === null) { stopBot(b, now); return; }
+        v.pendingCushion = c;
+        var p = cushionPos(c);
+        walkTo(b, { x: p.x, z: p.z }, function () {
+          if (v.pendingCushion !== c) return;
+          v.pendingCushion = undefined; v.cushion = c; v.pose = 'kneel'; v.position = { x: p.x, z: p.z, yaw: 0 };
+          delete v.bowAt; b.sitUntil = Date.now() + 20000 + Math.random() * 70000;
+          b.act = { kind: 'sit' }; dirty = true;
+        });
+      } else if (r < 0.68) { // 上香
+        var ix = Math.random() < 0.5 ? -1.6 : 1.6;
+        walkTo(b, { x: ix, z: 24.9 }, function () {
+          v.position.yaw = 0; dirty = true;
+          pruneIncense();
+          incense.push({ id: uuid(), visitorId: v.id, at: now, expiresAt: now + INCENSE_MS });
+          cb.onIncense(incense.slice());
+          cb.onEvent({ type: 'incense', id: v.id });
+          b.act = { kind: 'incense', nextAt: now + 4000 + Math.random() * 4000 };
+        });
+      } else if (r < 0.86) { // 漫步
+        var legs = 2 + Math.floor(Math.random() * 3);
+        var leg = function () {
+          if (b.act === null || b.act.kind !== 'stroll' || b.act.legsLeft <= 0) { stopBot(b, Date.now()); return; }
+          b.act.legsLeft--;
+          walkTo(b, { x: -11 + Math.random() * 22, z: 24.5 + Math.random() * 6.5 }, function () { b.nextDecisionAt = Date.now() + 600 + Math.random() * 1500; });
+        };
+        b.act = { kind: 'stroll', legsLeft: legs };
+        leg();
+      } else { // 伫立
+        b.act = { kind: 'linger', helloAt: Math.random() < 0.4 ? now + 1500 + Math.random() * 3000 : 0, endAt: now + 5000 + Math.random() * 6000 };
+        b.nextDecisionAt = Infinity;
+      }
+    }
+    function advance(b, now) {
+      var a = b.act, v = b.v;
+      if (!a) return;
+      if (a.kind === 'worship') {
+        if (now >= a.nextAt) {
+          if (a.bowsLeft <= 0) { delete v.bowAt; dirty = true; stopBot(b, now); return; }
+          a.bowsLeft--; v.bowAt = now; cb.onEvent({ type: 'bow', id: v.id }); dirty = true;
+          a.nextAt = now + 4200 + Math.random() * 1200;
+        }
+      } else if (a.kind === 'sit') {
+        if (now >= b.sitUntil) { cool(v.cushion); v.cushion = null; v.pose = 'walk'; dirty = true; stopBot(b, now); }
+        else if (Math.random() < 0.05) cb.onEvent({ type: 'bead', id: v.id });
+      } else if (a.kind === 'incense') {
+        if (now >= a.nextAt) stopBot(b, now);
+      } else if (a.kind === 'linger') {
+        if (a.helloAt && now >= a.helloAt) { cb.onEvent({ type: 'hello', id: v.id }); a.helloAt = 0; }
+        if (now >= a.endAt) stopBot(b, now);
+      }
+    }
+    function tick() {
+      if (destroyed) return;
+      var now = Date.now(), i, b;
+      for (i = 0; i < bots.length; i++) {
+        b = bots[i];
+        if (b.state === 'walk') {
+          var t = Math.min(1, (now - b.walkStart) / b.walkDur);
+          var e2 = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) * (-2 * t + 2) / 2;
+          var dx = b.to.x - b.from.x, dz = b.to.z - b.from.z;
+          b.v.position = { x: b.from.x + dx * e2, z: b.from.z + dz * e2, yaw: Math.atan2(-dx, -dz) || 0 };
+          dirty = true;
+          if (t >= 1) { b.state = 'idle'; var cbk = b.onArrive; b.onArrive = null; if (cbk) cbk(); }
+        }
+        if (b.act && b.state === 'idle') advance(b, now);
+        if (b.act && b.act.kind === 'stroll' && b.state === 'idle' && now >= b.nextDecisionAt) {
+          var leg = function (bb) { if (bb.act.legsLeft <= 0) { stopBot(bb, Date.now()); return; } bb.act.legsLeft--; walkTo(bb, { x: -11 + Math.random() * 22, z: 24.5 + Math.random() * 6.5 }, function () { bb.nextDecisionAt = Date.now() + 600 + Math.random() * 1500; }); };
+          leg(b);
+        }
+        if (!b.act && b.state === 'idle' && now >= b.nextDecisionAt) decide(b, now);
+      }
+      if (Math.random() < 0.008) {
+        var target = Math.max(2, Math.min(14, BOT_TARGET + (Math.random() < 0.5 ? -1 : 1)));
+        if (bots.length < target) makeBot(0);
+        else if (bots.length > target) {
+          var idx = Math.floor(Math.random() * bots.length);
+          var gone = bots[idx];
+          releaseSeat(gone.v.seat);
+          cool(gone.v.cushion);
+          bots.splice(idx, 1);
+          dirty = true;
+        }
+      }
+      flush();
+    }
+    for (var i0 = 0; i0 < BOT_TARGET; i0++) makeBot(60000 + Math.floor(Math.random() * 120 * 60000));
+    // ── 启动(模拟连接建立) ──
+    setTimeout(function () {
+      if (destroyed) return;
+      cb.onStatus('connecting');
+      setTimeout(function () {
+        if (destroyed) return;
+        cb.onStatus('connected');
+        flush();
+        cb.onState(visitors.map(wire), selfId);
+        if (cb.onAdmission) cb.onAdmission(wire(selfV), false);
+        cb.onIncense([]);
+        setInterval(tick, 500);
+      }, 400);
+    }, 250);
+    return {
+      roomId: 'maru', instanceId: 0, regionId: 'apac',
+      get isEntryIdle() { return false; },
+      markEntryActive: function () { }, suspendEntryIdle: function () { }, resumeEntryIdle: function () { },
+      move: function (x, z, yaw, pose) {
+        if (![x, z, yaw].every(Number.isFinite) || POSES.indexOf(pose) < 0) return;
+        selfV.position = { x: x, z: z, yaw: yaw }; selfV.pose = pose;
+        if (pose !== 'kneel' && selfV.cushion !== null) { cool(selfV.cushion); selfV.cushion = null; }
+        push();
+      },
+      bow: function () { selfV.bowAt = Date.now(); push(); },
+      hello: function () { }, bead: function () { },
+      stand: function () { cool(selfV.cushion); selfV.cushion = null; selfV.pose = 'walk'; push(); },
+      requestSeat: function () {
+        var c = freeCushion();
+        if (c === null) return Promise.resolve(null);
+        cool(selfV.cushion);
+        selfV.cushion = c; selfV.position = cushionPos(c); selfV.pose = 'kneel';
+        push();
+        return Promise.resolve(c);
+      },
+      offerIncense: function () {
+        pruneIncense();
+        incense.push({ id: uuid(), visitorId: selfId, at: Date.now(), expiresAt: Date.now() + INCENSE_MS });
+        cb.onIncense(incense.slice());
+        push();
+        return Promise.resolve(true);
+      },
+      joinIncenseQueue: function () { return Promise.resolve(false); },
+      leaveIncenseQueue: function () { return false; },
+      startIncenseRitual: function () { },
+      switchRoom: function () { return Promise.resolve(false); },
+      directory: function () { return Promise.resolve([{ id: 'maru', number: 1, count: visitors.length, capacity: 100, checkedAt: Date.now() }]); },
+      current: function () { return 'maru'; },
+      canChoose: function () { return false; },
+      onMoved: function () { },
+      destroy: function () { destroyed = true; },
+    };
+  };
+})();
+</script>
+  <script type="module" crossorigin src="/assets/index-C6rPWc71.js"></script>
+</head>
+<body>
+<div id="app">
+  <main id="sansa-boot" class="sansa-boot" role="status" aria-label="山寺">
+    <span class="sansa-boot-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11c5-1 8-4 10-7 2 3 5 6 10 7M4 12h16M7 13v7m10-7v7M4 20h16M10 15h4v5"/></svg></span>
+    <h1 id="sansa-boot-title">山寺</h1>
+    <p id="sansa-boot-message">法堂开放中</p>
+    <span class="sansa-boot-dot" aria-hidden="true"></span>
+    <a class="sansa-boot-retry" href="">重新进入</a>
+  </main>
+</div>
+<noscript><style>.sansa-boot{display:none}body{background:#20251f}</style><main style="padding:3rem;max-width:36rem;margin:auto;color:#f5f1e8;font-family:sans-serif;line-height:1.8"><h1>山寺 · 线上寺院</h1><p>转佛珠、行礼拜、小憩片刻的空间。</p><p>想参观法堂，请开启浏览器的 JavaScript。</p></main></noscript>
+</body>
+</html>

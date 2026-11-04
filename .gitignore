@@ -1,0 +1,12 @@
+# 会话/工具产物
+.zcode/
+.vite/
+tools/v2-pretty*.txt
+tools/ko-strings.txt
+*.log
+node_modules/
+
+# 系统文件
+Thumbs.db
+.DS_Store
+v2-class.txt
