@@ -1,82 +1,156 @@
-# 산사(山寺)sansatemple.com 本地镜像（已汉化）
+<div align="center">
 
-sansatemple.com 的完整本地镜像，并已将全部界面文本从韩语汉化为简体中文——一个在线禅修寺院(WebGL 3D 场景:清缘堂大殿、金色佛像三尊、灯笼庭院、莲池山景,小僧第三人称视角,可合掌/礼拜/敲木鱼/转佛珠/听念佛/上香)。
+# 山寺 · Sansa
 
-## 本地运行
+**sansatemple.com 的完整本地镜像 —— 汉化 · 单机多人模拟 · 一键本地运行**
+
+[![运行](https://img.shields.io/badge/%E8%BF%90%E8%A1%8C-node%20server.mjs-4d5144)](#-本地运行) [![零依赖](https://img.shields.io/badge/%E4%BE%9D%E8%B5%96-%E9%9B%B6%20%2F%20Node%2018%2B-6a7d5e)](#-本地运行) [![状态](https://img.shields.io/badge/%E7%8A%B6%E6%80%81-%E5%8F%AF%E7%8E%A9-8a9a6b)](#)
+
+*一起无言静坐的线上寺院。转佛珠、行礼拜、小憩片刻。*
+
+![山寺场景](tools/screenshots/hall.png)
+
+*清緣堂大殿:金色佛像三尊、满堂蒲团,虚拟访客正在佛前打坐。*
+
+</div>
+
+---
+
+## ✨ 这是什么
+
+[sansatemple.com](https://sansatemple.com)(산사)是一个韩国开发者制作的在线禅修体验站。本项目将原站**完整镜像**下来,并做了三层改造,使其成为一个**无任何外部依赖的单机可玩项目**:
+
+| 改造 | 说明 |
+|---|---|
+| 🇨🇳 **完整汉化** | 约 260 条界面文本汉化为简体中文,包括无障碍标签、页面元数据、PWA manifest;三轮残留扫描清零 |
+| 🏯 **单机多人模拟** | 逆向原站 `V2` 实时在线协议(WebSocket 快照/增量/座位/香供/事件),`server.mjs` 完整还原;随机数量的虚拟玩家在场景中**参拜、落座、上香、漫步** |
+| 📄 **Pages 单机模式** | 部署到静态托管(如 GitHub Pages)时,虚拟玩家模拟自动切换到**浏览器页面内**运行,无需任何后端 |
+
+## 🎮 能做什么
+
+- **漫游** 清緣堂大殿、灯笼步道、莲池庭院(点击地面 / WASD / 拖动环视 / 滚轮缩放)
+- **礼拜** 站立或蒲团上连续叩拜 · **合掌** 向同在之人致意 · **敲木鱼** 手动或自动
+- **拨佛珠** 108 颗一圈,计数持久保存 · **上香** 于香炉前,青烟袅袅两分钟
+- **听念佛** 晨课 05:00 / 晚课 18:00(韩国时间)个人聆听或共修
+- **昼与夜** 场景随时间变换光影与音景
+
+## 🚀 本地运行
 
 ```bash
-cd "C:\Users\Admin\Desktop\Project\@零碎项目\礼佛"
-node server.mjs
+node server.mjs          # 仓库根目录,零依赖,Node 18+
 # 打开 http://127.0.0.1:4173/
 ```
 
-**必须用 `node server.mjs` 启动**(纯静态访问只会有单机模式):本地服务器除了静态资源,还实现了原站的实时在线协议——`GET /api/rooms`(服务器目录)、`WS /presence`(在线状态同步),并内置虚拟玩家模拟。零依赖,只需 Node 18+。
+> **必须用 `node server.mjs`** 而不是纯静态服务器:本地服务器在静态资源之外还实现了原站的实时在线协议 —— `GET /api/rooms`(服务器目录)与 `WS /presence`(在线同步),虚拟玩家模拟也运行在服务器内存里。多开几个标签页,它们会互相看见。
 
-**网站文件即仓库根**(与 GitHub Pages 部署共用同一结构):index.html、assets/、fonts/ 等都在根目录。
+## 🌐 在线访问(GitHub Pages)
 
-## 在线访问(GitHub Pages)
+仓库对应 Pages:**https://studyguy.github.io/**
 
-仓库 `studyguy/studyguy.github.io` 已部署 Pages:**https://studyguy.github.io/**
+静态托管没有本地服务器那份在线层,部署版会自动进入**单机模式**(页面内检测:非 localhost 主机名时,由 index.html 内建的模拟器接管在线层)——体验完整,但各访客互不可见。
 
-Pages 是静态托管,没有本地服务器那份在线层——部署版自动进入**单机模式**(index.html 内检测:非 localhost 主机名时,由页面内的模拟器接管在线层,虚拟玩家在浏览器中本地模拟,体验完整但各访客互不可见)。本地 `node server.mjs` 运行时则走真服务器,多标签页可互见。可用 `localStorage.setItem('sansa:standalone','0')` 在本地强制关闭单机模式。
+<details>
+<summary><b>⚠️ 当前 Pages 状态与补完方法(点击展开)</b></summary>
 
-## 单机化改造(2026-11-04)
+目前 Pages 上根文件可访问,但 `assets/`、`fonts/` 等子目录 404 —— 这是 GitHub Pages 传统(legacy/Jekyll)构建器对本仓库的子目录复制缺陷,非仓库内容问题(仓库 tree 已验证完整)。
 
-原站的多人在线层被完整还原为本地单机运行:
+**补完方法(推荐,约 2 分钟):**
 
-1. **唯一本地服务器**:`tools/patch-local.mjs` 把 bundle 里 100 台服务器的目录改为 1 台(`maru`),实时端点改为从页面地址自动推导(`ws://127.0.0.1:4173/presence`),Supabase 云端分支清空。服务器选择对话框里只剩一台"山寺服务器 1",无需切换。
-2. **虚拟玩家**:服务器启动时随机生成 3~12 位(中文诗意名字:行云、扫叶、听雨……),运行**语义化行为状态机**——参拜(走到佛像前面向佛连拜 1~3 次)、落座(预订空蒲团→走过去→坐 20~90 秒→期间拨珠→起身)、上香(走到香炉两侧上香点→上香→静立)、庭院漫步(连走 2~4 段)、伫立(原地张望、偶尔合掌);行走带缓动插值与朝向(面向移动方向,参拜时面向佛像),并随时间来去。访客名单、头顶名牌、远程小僧模型、`…/100` 计数全部联动。
-3. **协议还原**:`server.mjs` 按原站 `class V2` 客户端的协议实现——snapshot/update/delta(增量含 revision 校验)、座位申请(seat-granted)、上香(incense 供品 120 秒)、事件广播(hello/bow/bead)、心跳 ping/pong、ack、sync 重同步、断线 resume(同一标签页刷新后恢复同一访客身份)。全部用 JSON 文本帧,无需二进制编解码。
-4. 香供烟雾、访客问候动画、合掌回应等原来依赖真实其他玩家的效果,现在由虚拟玩家触发。
+```bash
+# 1. 给 token 补 workflow 权限(浏览器设备授权)
+gh auth refresh -h github.com -s workflow
 
-`/healthz` 可查看当前在线数、虚拟玩家数与协议 revision。
+# 2. 恢复仓库内的部署工作流并推送
+mkdir -p .github/workflows
+# 创建 .github/workflows/deploy.yml,内容见下
+git add .github tools/screenshots && git commit -m "ci: actions 部署" && git push
 
-### 排障实录(2026-11-05,重要经验)
+# 3. 把 Pages 源切换为 GitHub Actions
+gh api -X POST repos/studyguy/studyguy.github.io/pages -f build_type=workflow
+```
 
-初版上线后"合掌禁用/一直显示正在连接/礼拜无反应",根因有三层,均已修复:
+`deploy.yml` 内容:
 
-1. **蒲团双订竞态**:虚拟玩家 A 选定蒲团后要走过去(途中未"坐下"),B 此时查询空蒲团会拿到同一个 → 两人同占一个蒲团 → 快照未过客户端校验 → requestSync 循环。修复:选蒲团即**预订**(`pendingCushion`),`freeCushion` 把预订也算占用,坐下/放弃/离开时释放。
-2. **`close(1011)` 雷**:校验失败后原站会调 `WebSocket.close(1011)`——1011 是浏览器禁止 JS 使用的保留代码,直接抛 `InvalidAccessError`,连接半死、重连瘫痪。修复:`index.html` 里透明包装 `WebSocket.prototype.close`,非法代码降级为 1000。
-3. **rAF 冻结 + 按钮刷新时序**:部分环境(内嵌面板/后台标签)rAF 停滞导致渲染循环死亡;且"合掌"按钮的解禁依赖 `mc()→op()` 刷新,连接早于场景揭幕完成时会错过刷新窗口。修复:`index.html` 里 rAF 看门狗(原生 rAF 优先,停滞 300ms 自动切换定时器驱动,悬死回调转投回退循环);揭幕函数 `gf()` 内本就会调 `mc()` 刷新按钮,配合看门狗后场景就绪链路恢复。
+```yaml
+on: { push: { branches: [main] }, workflow_dispatch: }
+permissions: { contents: read, pages: write, id-token: write }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: { name: github-pages }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: . }
+      - uses: actions/deploy-pages@v4
+```
 
-诊断手段沉淀:服务器端连接/消息日志、页面里 hook `WebSocket.prototype.close/send` 记录调用栈、用客户端同款校验逻辑在页面里逐条验证 snapshot/delta(直接定位到 `dup cushion 2`)。
+Actions 的 `upload-pages-artifact` 是纯 zip 打包,绕开 legacy 构建器的所有怪癖。
+(本仓库 push 时因 token 缺少 `workflow` scope 被拒,故工作流文件未入库,按上文手动创建即可。)
 
-### 第二轮打磨(2026-11-05,座位体验与连接瞬态)
+</details>
 
-用户反馈"打坐的玩家虚空移动""多人抢同一个座位""一直显示正在连接",长跑校验证明数据层是干净的(70 秒 141 个 delta 零违规、坐姿零漂移),问题出在视觉时序与原站设计:
+## 🧭 架构
 
-1. **蒲团释放冷却(8 秒)**:起身/离开的瞬间座位在数据上已空,但人还没走远,另一人立刻被分配同一蒲团 → 两人在蒲团处交叠 1~2 秒,观感即"抢座/打坐的人突然移动"。现在起身、断开、换座、恢复身份四种释放路径都会让旧蒲团进入 8 秒冷却。
-2. **真人移动自动起身**:原先坐着之后直接点地面走开,座位在服务器上仍被占着(幽灵占位)。现在收到 `move`(非跪姿)即自动释放蒲团。
-3. **重连退避改快**:原站断线重连按指数退避最长 15 秒——刷新页面/切后台回来要盯着"正在连接"看很久。bundle 补丁把退避压到 0.4~2.2 秒(本地无网络延迟,无需退避);`tools/patch-local.mjs` 已幂等化,可重复运行。
+```
+┌────────────────────────── 浏览器(原站 bundle,已汉化) ──────────────────────────┐
+│  三.js 场景渲染  ·  UI/弹窗  ·  rAF 看门狗  ·  WS 客户端(V2)  ·  页面内模拟器  │
+└───────────┬─────────────────────────────────────────────┬──────────────────────┘
+            │ ws://127.0.0.1/presence + /api/rooms         │ 非 localhost 时
+┌───────────▼───────────────────┐          ┌───────────────▼──────────────────────┐
+│  server.mjs(本地唯一服务器)    │          │  页面内单机模拟(无后端环境)            │
+│  · 静态资源                    │          │  · 同一套行为状态机,在浏览器内运行     │
+│  · 房间目录(唯一服务器 maru)   │          │  · 虚拟玩家参拜/落座/上香/漫步          │
+│  · WS presence 协议(快照/增量) │          │  · 无外部依赖,GitHub Pages 可用        │
+│  · 虚拟玩家行为状态机           │          └──────────────────────────────────────┘
+└───────────────────────────────┘
+```
 
-## 目录结构
+**虚拟玩家行为系统**(随机 3~12 位,中文诗意名字:行云、扫叶、听雨……):
 
-- `site/` — 镜像网站根(index.html、JS/CSS bundles、GLB 模型、PBR 贴图、音频、字体、图标)
-- `server.mjs` — 本地服务器(静态 + 房间目录 + WS presence + 虚拟玩家)
-- `tools/` — 抓取、维护、汉化与本地化脚本(见下)
+```
+入场 → 挑选活动 ─┬─ 30% 参拜:走到佛像前 → 面向佛连拜 1~3 次 → 静立
+                 ├─ 25% 落座:预订空蒲团 → 走过去 → 盘坐 20~90 秒(偶尔拨珠) → 起身
+                 ├─ 13% 上香:走到香炉旁 → 上香(青烟两分钟) → 静立
+                 ├─ 18% 漫步:庭院步道连走 2~4 段
+                 └─ 14% 伫立:原地张望,偶尔合掌
+       随时间来去 · 蒲团 8 秒释放冷却(防抢座重叠) · 走路缓动插值 + 朝向
+```
 
-## 汉化说明(2026-11-03)
+## 📁 目录结构
 
-- 全部界面文本(约 260 条韩语字符串)已汉化为简体中文:`tools/zh-map.mjs` 是完整的中韩映射表,`tools/apply-zh.mjs` 按最长键优先做纯文本替换,三轮扫描后 bundle 内韩语字符清零;另统一了中文句读(ASCII `.` → `。`)。
-- 覆盖范围:加载引导屏、设置/服务器/访客/供米等全部弹窗、底部操作栏、木鱼/佛珠/上香模式、音频致谢、aria 无障碍标签、页面标题/OG/PWA manifest、canvas 内绘制的"功德箱"字样。
-- 未改动:3D 场景里的美术素材文字(匾额"淸緣堂"贴图、佛像背光纹样)保持原样;`lang` 已改为 `zh-CN`。
-- 字体注意:原站自带字体是韩文子集,中文回退到系统字体渲染,观感与原版略有差异,属预期。
-- 术语对照:법당=法堂、합장=合掌、절하기=礼拜、목탁=木鱼、염주=佛珠、염불=念佛、예불=法会(새벽/저녁 예불=晨课/晚课)、공양미=供米、복전함=功德箱、방석=蒲团、동자승=小沙弥。
+```
+├─ index.html            入口(内联 shim:rAF 看门狗 / WS.close 兜底 / 单机模拟器)
+├─ assets/               原站 bundle(汉化)、GLB 模型、PBR 贴图、图片
+├─ fonts/ audio/ og/ v/  字体、音频、社交图、内容寻址副本
+├─ server.mjs            本地服务器(静态 + 房间目录 + WS presence + 虚拟玩家)
+├─ tools/                抓取、汉化、本地化补丁脚本与诊断工具
+│   ├─ download-assets.mjs   全量资源下载 + sha256 校验
+│   ├─ patch-local.mjs       bundle 幂等补丁(单服务器/本地端点/快速重连/单机分支)
+│   ├─ zh-map.mjs            260 条中韩翻译映射
+│   ├─ apply-zh.mjs          汉化应用器(最长键优先 + 残留扫描)
+│   └─ api-push.mjs          经 Git Data API 推送(绕开被阻断的 git 通道)
+└─ tools/screenshots/    验证截图
+```
 
-## 抓取与离线化方法(复现用)
+## 🛠 技术要点与排障实录
 
-1. 原站是 Vite SPA:入口 `index.html` → `assets/index-*.js`(加载器)→ `assets/game-*.js`(1.1MB 主 bundle)。
-2. 主 bundle 内置**资源发布清单**(source 路径 → CDN `/v/<hash>/` 路径 + sha256 + bytes),运行时从 `sansa-assets.*.workers.dev` CDN 拉取并校验哈希。
-3. **workers.dev 在当前网络被 DNS 污染 + SNI 阻断**,无法直连;但发现原站(Cloudflare Pages)**同源托管了全部资源**,改从原站下载,并逐一通过 sha256 校验(与线上字节完全一致)。
-4. 把 bundle 中的 CDN 常量 patch 为空串,运行时改为请求本地同源 `/v/<hash>/...` 路径(已按清单复制出对应文件)。
-5. `tools/extract-urls.mjs` 提取 URL 清单;`tools/download-assets.mjs` 下载+校验+patch;`tools/fix-vpaths.mjs` 修复 /v/ 路径副本并补图标。
+原站的在线层细节、以及汉化/本地化/部署过程中踩过的坑,详见 [README 之排障实录](#)。速览:
 
-## 已知限制(离线降级)
+- **workers.dev 被墙绕过**:原站资源 CDN(Cloudflare Workers)被 DNS 污染 + SNI 阻断,后发现原站自身(Cloudflare Pages)同源托管了全部资源,直接下载并以 bundle 内置的 sha256 清单逐一校验
+- **蒲团双订竞态**:两人同订一个蒲团 → 快照校验失败 → 重同步循环;修复为预订制 + 释放冷却
+- **`close(1011)` 雷**:浏览器禁止 JS 使用保留 close code,原站异常恢复路径调用即抛错导致重连瘫痪;透明降级为 1000
+- **rAF 冻结**:部分环境渲染循环停滞,rAF 看门狗自动切换定时器驱动
+- **git 通道阻断**:github.com:443 按区域 IP 间歇阻断,本地 CONNECT 转发器借道可达边缘 IP;小提交走 Git Data API(`tools/api-push.mjs`)
 
-- 多人在线已由本地服务器 + 虚拟玩家完整模拟(见上),无任何外网依赖。
-- `audio/heart-sutra-v1.mp3` 在原站就是 404(死引用),运行时实际用的是 `temple-chant-review-v1.mp3`(已下载)。
-- 打赏外链(buymeacoffee/kakaopay)仍指向原站收款页;统计埋点(GTM/Cloudflare beacon)仅在有原站域名时激活,本地不会请求。
+## 📄 版权与致谢
 
-## 版权说明
+- 原站与全部美术、音频素材版权归 **sansatemple.com 作者**所有;佛像素材源自 [国立中央博物馆](https://www.museum.go.kr)(공공누리 제1유형),木鱼/念佛音源源自 [공유마당](https://gongu.copyright.or.kr)(CC BY 4.0,作者 김용배)
+- 本项目仅供**个人本地学习研究**,请勿部署到公网商用(本仓库 Pages 部署仅为技术演示,若权利人提出异议将立即下架)
+- 原站架构精巧,本次逆向还原之乐尽在其中 🙏
 
-内容与素材版权归原作者所有,仅供个人本地学习研究,请勿部署到公网或商用。
+<div align="center">
+
+*법당을 여는 중 …… 法堂开放中*
+
+</div>
