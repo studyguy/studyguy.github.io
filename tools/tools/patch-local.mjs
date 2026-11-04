@@ -8,7 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const BUNDLE = path.join(ROOT, 'site', 'assets', 'game-iJ7UN04i.js');
+const BUNDLE = path.join(ROOT, 'assets', 'game-iJ7UN04i.js');
 
 const edits = [
   // 100 hardcoded rooms -> single local server

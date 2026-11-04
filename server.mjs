@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const SITE = path.join(ROOT, 'site');
+const SITE = ROOT; // 网站即仓库根(GitHub Pages 与本地服务器共用同一结构)
 const PORT = Number(process.env.PORT) || 4173;
 const HOST = process.env.HOST || '127.0.0.1';
 

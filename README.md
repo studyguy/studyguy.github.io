@@ -10,7 +10,15 @@ node server.mjs
 # 打开 http://127.0.0.1:4173/
 ```
 
-**必须用 `node server.mjs` 启动**(不能再用纯静态服务器):本地服务器除了静态资源,还实现了原站的实时在线协议——`GET /api/rooms`(服务器目录)、`WS /presence`(在线状态同步),并内置虚拟玩家模拟。零依赖,只需 Node 18+。
+**必须用 `node server.mjs` 启动**(纯静态访问只会有单机模式):本地服务器除了静态资源,还实现了原站的实时在线协议——`GET /api/rooms`(服务器目录)、`WS /presence`(在线状态同步),并内置虚拟玩家模拟。零依赖,只需 Node 18+。
+
+**网站文件即仓库根**(与 GitHub Pages 部署共用同一结构):index.html、assets/、fonts/ 等都在根目录。
+
+## 在线访问(GitHub Pages)
+
+仓库 `studyguy/studyguy.github.io` 已部署 Pages:**https://studyguy.github.io/**
+
+Pages 是静态托管,没有本地服务器那份在线层——部署版自动进入**单机模式**(index.html 内检测:非 localhost 主机名时,由页面内的模拟器接管在线层,虚拟玩家在浏览器中本地模拟,体验完整但各访客互不可见)。本地 `node server.mjs` 运行时则走真服务器,多标签页可互见。可用 `localStorage.setItem('sansa:standalone','0')` 在本地强制关闭单机模式。
 
 ## 单机化改造(2026-11-04)
 
